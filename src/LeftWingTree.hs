@@ -1,5 +1,7 @@
-module LeftWingTree
-    ( LeftWingTree(EmptyTree, Node)
+module LeftWingTree(
+      LeftWingTree(EmptyTree, Node),
+      singleton,
+      prioritySort
     ) where
 
 import PriorityQueue
@@ -23,3 +25,16 @@ instance PriorityQueue LeftWingTree where
   deleteMin tree = undefined
 
   join t1 t2 = undefined
+
+
+singleton :: a -> LeftWingTree a
+singleton a = Node { v = a, h = 0, left = EmptyTree, right = EmptyTree }
+
+prioritySort :: [Int] -> [Int]
+prioritySort xs = sort tree []
+  where
+    nodes = map singleton xs
+    tree = foldl join EmptyTree nodes
+    sort EmptyTree acc = reverse acc
+    sort tree acc =  e:acc where
+      (Just e, tree') = deleteMin tree

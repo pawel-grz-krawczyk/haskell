@@ -15,3 +15,4 @@ class Priority a where
 
 instance Priority Int where
   priority = id
+  
