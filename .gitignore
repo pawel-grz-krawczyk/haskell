@@ -1,2 +1,5 @@
 .stack-work/
 *~
+.idea
+left-wing-trees.iml
+stack.yaml.lock

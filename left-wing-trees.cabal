@@ -4,16 +4,16 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0d6032d38ce499b0faa33bdf3468409e6a367f4c423da3ae3c0a38b123106cb3
+-- hash: 65e03bcb910c4f0356100ab5248d66355e6b92a9c985253f806f6709cf7f238b
 
 name:           left-wing-trees
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/left-wing-trees#readme>
-homepage:       https://github.com/githubuser/left-wing-trees#readme
-bug-reports:    https://github.com/githubuser/left-wing-trees/issues
-author:         Author name here
+homepage:       https://github.com/pawel-grz-krawczyk/left-wing-trees#readme
+bug-reports:    https://github.com/pawel-grz-krawczyk/left-wing-trees/issues
+author:         Pawel Krawczyk
 maintainer:     example@example.com
-copyright:      2020 Author name here
+copyright:      2020 Pawel Krawczyk
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -23,11 +23,12 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/left-wing-trees
+  location: https://github.com/pawel-grz-krawczyk/left-wing-trees
 
 library
   exposed-modules:
-      Lib
+      LeftWingTree
+    , PriorityQueue
   other-modules:
       Paths_left_wing_trees
   hs-source-dirs:
@@ -58,5 +59,7 @@ test-suite left-wing-trees-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , hspec
     , left-wing-trees
+    , QuickCheck
   default-language: Haskell2010

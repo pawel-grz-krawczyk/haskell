@@ -1,10 +1,10 @@
 name:                left-wing-trees
 version:             0.1.0.0
-github:              "githubuser/left-wing-trees"
+github:              "pawel-grz-krawczyk/left-wing-trees"
 license:             BSD3
-author:              "Author name here"
+author:              "Pawel Krawczyk"
 maintainer:          "example@example.com"
-copyright:           "2020 Author name here"
+copyright:           "2020 Pawel Krawczyk"
 
 extra-source-files:
 - README.md
@@ -46,3 +46,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - left-wing-trees
+    - hspec
+    - quickcheck
