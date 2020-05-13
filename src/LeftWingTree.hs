@@ -1,5 +1,5 @@
 module LeftWingTree(
-      LeftWingTree,
+      LeftWingTree( Node, v, h, left, right), -- would it be possible to export Node just in tests?
       singletonQ,
       emptyQ,
       prioritySort
@@ -40,7 +40,7 @@ join' Node {v = v1, left = left1, right = right1} smallerPriorityTree =
   where
     t3 = join right1 smallerPriorityTree
     (leftTree, rightTree) =
-      if height t3 < height left1
+      if height t3 > height left1
         then (t3, left1)
         else (left1, t3)
 

@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeOperators #-}
 import Test.Hspec
 import Test.QuickCheck
 import Control.Exception (evaluate)
@@ -21,7 +20,6 @@ main = hspec $ do
       isEmpty (T.singletonQ 0) `shouldBe` False
 
     it "adding single element to empty tree" $ do
-      let foo = 0
       add 0 emptyTree `shouldBe` (T.singletonQ 0)
 
     it "deleting min of single node tree" $ do
@@ -37,13 +35,39 @@ main = hspec $ do
       deleteMin tree `shouldBe` (Just 0, (T.singletonQ 10))
 
     it "joining a tree with empty tree returns the tree" $ do
-      let tree = (T.singletonQ 0) in join emptyTree tree `shouldBe` tree
-      let tree = (T.singletonQ 0) in join tree emptyTree `shouldBe` tree
+      let tree = T.singletonQ 0 in join emptyTree tree `shouldBe` tree
+      let tree = T.singletonQ 0 in join tree emptyTree `shouldBe` tree
 
     it "joining two trees - order of trees does not matter" $ do
       let tree1 = add 1 (T.singletonQ 0) :: T.LeftWingTree Int
       let tree2 = add 4 (T.singletonQ 5) :: T.LeftWingTree Int
       join tree1 tree2 `shouldBe` join tree2 tree1
+
+    it "joining two complex trees" $ do
+      let tree1 = T.Node { T.v = 2, T.h = 1, T.left = T.singletonQ 10, T.right = T.singletonQ 6 }
+      let tree2 = T.Node { T.v = 4, T.h = 0 , T.right = emptyTree,
+                           T.left = T.Node { T.v = 6, T.h = 0 , T.right = emptyTree,
+                                             T.left = T.singletonQ 8
+                           }
+      }
+      let expectedJoinResult = T.Node {
+         T.v = 2,
+         T.h = 1,
+         T.right = T.singletonQ 10,
+         T.left = T.Node {
+            T.v = 4,
+            T.h = 1,
+            T.right = T.singletonQ 6,
+            T.left = T.Node {
+              T.v = 6,
+              T.h = 0,
+              T.right = emptyTree,
+              T.left = T.singletonQ 8
+            }
+         }
+      }
+      join tree1 tree2 `shouldBe` join tree2 tree1
+      join tree1 tree2 `shouldBe` expectedJoinResult
 
   describe "Priority sorting" $ do
     it "empty list" $ do
