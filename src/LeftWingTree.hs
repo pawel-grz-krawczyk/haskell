@@ -1,6 +1,7 @@
 module LeftWingTree(
-      LeftWingTree(EmptyTree, Node),
-      singleton,
+      LeftWingTree,
+      singletonQ,
+      emptyQ,
       prioritySort
     ) where
 
@@ -16,25 +17,49 @@ data LeftWingTree a = EmptyTree |
 
 
 instance PriorityQueue LeftWingTree where
-  empty = undefined
+  empty = EmptyTree
 
-  isEmpty EmptyTree = undefined
+  isEmpty EmptyTree = True
+  isEmpty _ = False
 
-  add e tree = undefined
+  add e tree = join tree $ singletonQ e
 
-  deleteMin tree = undefined
+  deleteMin EmptyTree = (Nothing, EmptyTree)
+  deleteMin Node {v=v, h=_, left=left, right=right} = (Just v, join left right)
 
-  join t1 t2 = undefined
+  join EmptyTree tree = tree
+  join tree EmptyTree = tree
+  join t1@Node {v=v1} t2@Node {v=v2}
+    | priority v1 < priority v2 =  join' t1 t2
+    | otherwise = join' t2 t1
 
 
-singleton :: a -> LeftWingTree a
-singleton a = Node { v = a, h = 0, left = EmptyTree, right = EmptyTree }
+join' :: (Priority a) => LeftWingTree a -> LeftWingTree a -> LeftWingTree a
+join' Node {v = v1, left = left1, right = right1} smallerPriorityTree =
+  Node {v = v1, h = height rightTree + 1, left = leftTree, right = rightTree}
+  where
+    t3 = join right1 smallerPriorityTree
+    (leftTree, rightTree) =
+      if height t3 < height left1
+        then (t3, left1)
+        else (left1, t3)
 
-prioritySort :: [Int] -> [Int]
+height :: LeftWingTree a -> Int
+height EmptyTree = -1
+height tree = h tree
+
+singletonQ :: a -> LeftWingTree a
+singletonQ a = Node { v = a, h = 0, left = EmptyTree, right = EmptyTree }
+
+emptyQ:: LeftWingTree a
+emptyQ = EmptyTree
+
+prioritySort :: (Priority a) => [a] -> [a]
 prioritySort xs = sort tree []
   where
-    nodes = map singleton xs
+    nodes = map singletonQ xs
     tree = foldl join EmptyTree nodes
+    sort :: (Priority a) => LeftWingTree a -> [a] -> [a]
     sort EmptyTree acc = reverse acc
-    sort tree acc =  e:acc where
+    sort tree acc =  sort tree' (e : acc) where
       (Just e, tree') = deleteMin tree

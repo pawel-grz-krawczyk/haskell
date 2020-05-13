@@ -1,6 +1,6 @@
 module PriorityQueue(
        PriorityQueue(empty, isEmpty, add, deleteMin, join),
-       Priority
+       Priority(priority)
    ) where
 
 class PriorityQueue q where
@@ -15,4 +15,3 @@ class Priority a where
 
 instance Priority Int where
   priority = id
-  
