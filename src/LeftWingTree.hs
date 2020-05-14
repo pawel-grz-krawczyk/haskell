@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module LeftWingTree(
       LeftWingTree( Node, v, h, left, right), -- would it be possible to export Node just in tests?
       singletonQ,
@@ -16,7 +18,7 @@ data LeftWingTree a = EmptyTree |
                     } deriving (Eq, Read, Show)
 
 
-instance PriorityQueue LeftWingTree where
+instance (Priority a) => PriorityQueue LeftWingTree a where
   empty = EmptyTree
 
   isEmpty EmptyTree = True
