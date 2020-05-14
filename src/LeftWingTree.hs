@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 module LeftWingTree(
-      LeftWingTree( Node, v, h, left, right), -- would it be possible to export Node just in tests?
+      LeftWingTree(Node, v, h, left, right), -- would it be possible to export Node just in tests?
       singletonQ,
       emptyQ,
       prioritySort
@@ -59,8 +59,7 @@ emptyQ = EmptyTree
 prioritySort :: (Priority a) => [a] -> [a]
 prioritySort xs = sort tree []
   where
-    nodes = map singletonQ xs
-    tree = foldl join EmptyTree nodes
+    tree = foldl join EmptyTree . map singletonQ $ xs
     sort :: (Priority a) => LeftWingTree a -> [a] -> [a]
     sort EmptyTree acc = reverse acc
     sort tree acc =  sort tree' (e : acc) where
