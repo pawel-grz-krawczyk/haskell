@@ -1,6 +1,6 @@
-name:                left-wing-trees
+name:                haskell
 version:             0.1.0.0
-github:              "pawel-grz-krawczyk/left-wing-trees"
+github:              "pawel-grz-krawczyk/haskell"
 license:             BSD3
 author:              "Pawel Krawczyk"
 maintainer:          "example@example.com"
@@ -34,7 +34,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - left-wing-trees
+    - haskell
 
 tests:
   left-wing-trees-test:
@@ -45,6 +45,6 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - left-wing-trees
+    - haskell
     - hspec
-    - quickcheck
+    - QuickCheck

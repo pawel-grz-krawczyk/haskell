@@ -4,13 +4,13 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 65e03bcb910c4f0356100ab5248d66355e6b92a9c985253f806f6709cf7f238b
+-- hash: ffd2bd6b4b47859d69735c78d5d5ddfd816b618d1c3158fbe17a36b7aa201dc3
 
-name:           left-wing-trees
+name:           haskell
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/left-wing-trees#readme>
-homepage:       https://github.com/pawel-grz-krawczyk/left-wing-trees#readme
-bug-reports:    https://github.com/pawel-grz-krawczyk/left-wing-trees/issues
+homepage:       https://github.com/pawel-grz-krawczyk/haskell#readme
+bug-reports:    https://github.com/pawel-grz-krawczyk/haskell/issues
 author:         Pawel Krawczyk
 maintainer:     example@example.com
 copyright:      2020 Pawel Krawczyk
@@ -23,14 +23,15 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/pawel-grz-krawczyk/left-wing-trees
+  location: https://github.com/pawel-grz-krawczyk/haskell
 
 library
   exposed-modules:
       LeftWingTree
-    , PriorityQueue
+      Origami
+      PriorityQueue
   other-modules:
-      Paths_left_wing_trees
+      Paths_haskell
   hs-source-dirs:
       src
   build-depends:
@@ -40,26 +41,28 @@ library
 executable left-wing-trees-exe
   main-is: Main.hs
   other-modules:
-      Paths_left_wing_trees
+      Paths_haskell
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
-    , left-wing-trees
+    , haskell
   default-language: Haskell2010
 
 test-suite left-wing-trees-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_left_wing_trees
+      LeftWingTreeSpec
+      OrigamiSpec
+      Paths_haskell
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
+    , haskell
     , hspec
-    , left-wing-trees
-    , QuickCheck
   default-language: Haskell2010
