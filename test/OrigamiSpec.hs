@@ -2,7 +2,6 @@ module OrigamiSpec(spec) where
 
 import Test.Hspec
 import Test.QuickCheck
-import Control.Exception (evaluate)
 
 spec :: Spec
 spec =  do
