@@ -96,17 +96,18 @@ spec =  do
 
     describe "folding twice - y = 0 and x = 0" $ do
       let fc = Origami.foldMany [((0, 0), (1, 0)), ((0, 1), (0, 0))] circle -- upper right quarter of the circle
-      it "one layer on both lines" $ do
+      it "one layer in (0, 0) point" $ do
         fc (0, 0) `shouldBe` 1
-        fc (0, 5) `shouldBe` 1
-        fc (5, 0) `shouldBe` 1
-        fc (0, 10) `shouldBe` 1
-        fc (10, 0) `shouldBe` 1
-      it "two layers in the upper right quarter" $ do
-        fc (1, 1) `shouldBe` 2
-        fc (0.5, 8) `shouldBe` 2
-        fc (9, 0.2) `shouldBe` 2
-        fc (5, 7) `shouldBe` 2
+      it "two layers on both lines" $ do
+        fc (0, 5) `shouldBe` 2
+        fc (5, 0) `shouldBe` 2
+        fc (0, 10) `shouldBe` 2
+        fc (10, 0) `shouldBe` 2
+      it "four layers in the upper right quarter" $ do
+        fc (1, 1) `shouldBe` 4
+        fc (0.5, 8) `shouldBe` 4
+        fc (9, 0.2) `shouldBe` 4
+        fc (5, 7) `shouldBe` 4
       it "zero layers in other quarters" $ do
         fc (-1, 0) `shouldBe` 0
         fc (-1, 1) `shouldBe` 0
@@ -196,23 +197,21 @@ spec =  do
          fs (0, -5) `shouldBe` 0
          fs (-4, 0) `shouldBe` 0
       it "zero layers on the line outside of rectangle" $ do
-         fs (0, 0) `shouldBe` 1
-         fs (-6, 6) `shouldBe` 1
-         fs (6, -6) `shouldBe` 1
+         fs (-6, 6) `shouldBe` 0
+         fs (6, -6) `shouldBe` 0
 
     describe "folding twice - y = 0 and x = 0" $ do
       let fs = Origami.foldMany [((0, 0), (1, 0)), ((0, 1), (0, 0))] square -- upper right quarter of the square
-      it "one layer on both lines" $ do
+      it "one layer in (0, 0) point" $ do
         fs (0, 0) `shouldBe` 1
-        fs (0, 5) `shouldBe` 1
-        fs (5, 0) `shouldBe` 1
-        fs (0, -5) `shouldBe` 1
-        fs (-5, 0) `shouldBe` 1
-      it "two layers in the upper right quarter" $ do
-        fs (1, 1) `shouldBe` 2
-        fs (0.5, 3) `shouldBe` 2
-        fs (5, 0.2) `shouldBe` 2
-        fs (0, 2) `shouldBe` 2
+      it "two layers on both lines" $ do
+        fs (0, 5) `shouldBe` 2
+        fs (5, 0) `shouldBe` 2
+        fs (2.5, 0) `shouldBe` 2
+      it "four layers in the upper right quarter" $ do
+        fs (1, 1) `shouldBe` 4
+        fs (0.5, 3) `shouldBe` 4
+        fs (5, 0.2) `shouldBe` 4
       it "zero layers in other quarters" $ do
         fs (-1, 0) `shouldBe` 0
         fs (-1, 1) `shouldBe` 0
@@ -223,8 +222,40 @@ spec =  do
         fs (-5, -5) `shouldBe` 0
       it "zero layers on both lines outside of rectangle" $ do
         fs (0, 6) `shouldBe` 0
-        fs (5, 0) `shouldBe` 0
+        fs (6, 0) `shouldBe` 0
         fs (0, -5.1) `shouldBe` 0
         fs (-5.1, 0) `shouldBe` 0
+
+  describe "rectangle foldings" $ do
+    it "2 foldings, one step at a time" $ do
+      let rectangle = Origami.rectangle (0, 0) (3, 2)
+          foldedRectangle =  Origami.foldMany [((2, 0), (2, 1)), ((1, 0), (1, 1))] rectangle
+      foldedRectangle (0, 0) `shouldBe` 2
+      foldedRectangle (0, 1) `shouldBe` 2
+      foldedRectangle (0, 2) `shouldBe` 2
+
+      foldedRectangle (1, 0) `shouldBe` 2
+      foldedRectangle (1, 1) `shouldBe` 2
+      foldedRectangle (1, 2) `shouldBe` 2
+
+      foldedRectangle (0.5, 0) `shouldBe` 3
+      foldedRectangle (0.5, 1) `shouldBe` 3
+      foldedRectangle (0.5, 2) `shouldBe` 3
+
+    it "2 foldings, binary" $ do
+      let rectangle = Origami.rectangle (0, 0) (4, 2)
+          foldedRectangle =  Origami.foldMany [((2, 0), (2, 1)), ((1, 0), (1, 1))] rectangle
+      foldedRectangle (0, 0) `shouldBe` 3
+      foldedRectangle (0, 1) `shouldBe` 3
+      foldedRectangle (0, 2) `shouldBe` 3
+
+      foldedRectangle (1, 0) `shouldBe` 2
+      foldedRectangle (1, 1) `shouldBe` 2
+      foldedRectangle (1, 2) `shouldBe` 2
+
+      foldedRectangle (0.5, 0) `shouldBe` 4
+      foldedRectangle (0.5, 1) `shouldBe` 4
+      foldedRectangle (0.5, 2) `shouldBe` 4
+
 
 

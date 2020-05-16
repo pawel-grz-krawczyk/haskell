@@ -1,14 +1,10 @@
 module Origami(rectangle, circle, foldMany) where
 
- -- r = rectangle (0, 0) (10, 10)
- -- fr = foldOnce ((0, 5), (1, 5)) r
-
 type Point = (Float, Float)
 type OrigamiSheet = Point -> Int
 
-type Line = (Point, Point)
-
-data FoldingDirection = L | R
+type FoldingDirection = Ordering
+data Line = HorizontalLine {y :: Float} | VerticalLine {x :: Float} | LinearFunction { a :: Float, b :: Float}
 
 rectangle :: Point -> Point -> OrigamiSheet
 rectangle (x1, y1) (x2, y2) = layers
@@ -31,48 +27,54 @@ circle (x, y) r = layers
 -- - points on the line have the same number of layers as the sheet before folding
 -- - points on the left side of the line have the same number of layers as the sheet before folding + layers of
 --   folded are of sheet
-foldOnce :: Line -> OrigamiSheet -> OrigamiSheet
-foldOnce  = foldOnce' L -- TODO compute direction
+foldOnce :: (Point, Point) -> OrigamiSheet -> OrigamiSheet
+foldOnce points = foldOnce' direction line
+  where
+    (line, direction) = lineAndDirection points
 
-foldOnce' :: FoldingDirection -> Line -> OrigamiSheet -> Point -> Int
-foldOnce' direction line@((x1, y1), (x2, y2)) sheet p@(a, b) = fold direction (pointPosition line p) where
-  fold L GT = addFoldings
-  fold R LT = addFoldings
-  fold _ EQ = sheet p
-  fold _ _ = 0
-  addFoldings = sheet p + sheet (mirrorPoint line p)
+foldOnce' :: Ordering -> Line -> OrigamiSheet -> Point -> Int
+foldOnce' direction line sheet p@(a, b) = fold direction (pointPosition line p)
+  where
+    fold GT GT = addSheetsLayers
+    fold LT LT = addSheetsLayers
+    fold _ EQ = sheet p
+    fold _ _ = 0
+    addSheetsLayers = sheet p + sheet (mirrorPoint line p)
 
 
 mirrorPoint :: Line -> Point  -> Point
-mirrorPoint line@((x1, y1), (x2, y2)) p@(x3, y3) =
-  if y1 == y2 then (x3, y3 + 2 * (y1 - y3)) else mirrorPoint' line p where
+mirrorPoint HorizontalLine {y=y} (x1, y1) = (x1, y1 + 2 * (y - y1))
+mirrorPoint VerticalLine {x=x} (x1, y1) = (x1 + 2 * (x - x1), y1)
+mirrorPoint LinearFunction {a=a, b=b} (x, y) = (mirrorX, mirrorY)
+  where
+    a2 = -1 * a
+    b2 = y - a2 * x
+    interX = (b2 - b) / (a - a2)
+    interY = a * interX + b
+    mirrorX = x + 2 * (interX - x)
+    mirrorY = y + 2 * (interY - y)
 
-    mirrorPoint' ((x1, y1), (x2, y2)) (x3, y3) = (mirrorX, mirrorY) where
-        a1 = (y2 - y1) / (x2 - x1)
-        b1 = y1 - a1 * x1
-        a2 = -1 * a1
-        b2 = y3 - a2 * x3
-        interX = (b2 - b1) / (a1 - a2)
-        interY = a1 * interX + b1
-        mirrorX = x3 + 2 * (interX - x3)
-        mirrorY = y3 + 2 * (interY - y3)
 
-pointPosition :: Line -> Point -> Ordering -- GT = point is left of the line
-pointPosition line@((x1, _), (x2, _)) =
-  if x1 == x2
-    then pointPositionVerticalLine line
-    else pointPositionProperLine line
+pointPosition :: Line -> Point -> FoldingDirection
+pointPosition HorizontalLine {y=y} (_, y1) = compare y1 y
+pointPosition VerticalLine {x=x} (x1, _) = compare x1 x
+pointPosition LinearFunction {a=a, b=b} (x, y) = compare y (a * x + b)
 
-pointPositionVerticalLine :: Line -> Point -> Ordering
-pointPositionVerticalLine ((x1, y1), (_, y2)) (x3, y3) =
-  if y1 <= y2
-    then compare x1 x3
-    else compare x3 x1
 
-pointPositionProperLine :: Line -> Point -> Ordering -- GT = point is left of the line
-pointPositionProperLine ((x1, y1), (x2, y2)) (x3, y3) = compare y3 (a * x3 + b) where
-    a = (y2 - y1) / (x2 - x1)
-    b = y1 - a * x1
+lineAndDirection:: (Point, Point) -> (Line, FoldingDirection)
+lineAndDirection line@((x1, y1), (x2, y2))
+  | x1 == x2 = (VerticalLine {x=x1}, compare y1 y2)
+  | y1 == y2 = (HorizontalLine {y=y1}, compare x2 x1)
+  | otherwise = (LinearFunction {a=a, b=b}, compare x2 x1)
+      where
+        a = (y2 - y1) / (x2 - x1)
+        b = y1 - a * x1
 
-foldMany :: [Line] -> OrigamiSheet -> OrigamiSheet
-foldMany lines sheet = foldl (flip foldOnce) sheet lines
+
+foldMany :: [(Point, Point)] -> OrigamiSheet -> OrigamiSheet
+foldMany lines sheet = foldl (flip foldOnce) sheet $ filter properLine lines
+
+
+properLine (p1, p2)
+  | p1 == p2 = False
+  | otherwise = True
